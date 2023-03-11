@@ -1,0 +1,148 @@
+Tema 2 - Octavian's Saga
+====================
+
+Arpasanu Emilia-Oana, 321 CA
+
+Task 1 - trial
+-------------------
+
+- el presupune transformarea datelor problemei acoperirii multimilor
+(o problema NP-completa) in cele specifice problemei satisfiabilitatii,
+cu scopul obtinerii unei solutii exacte ce ofera raspunsul in timp polinomial
+(conform teoremei lui Cook); acestea sunt pasate instantei ce le rezolva,
+raspunsul acesteia fiind mai apoi interpretat pentru a corespunde cerintei date;
+
+- pentru a putea realiza reducerea polinomiala, programul efectueaza urmatorii
+pasi:
+
+	* citirea si memorarea datelor de intrare primite de la tastatura: 
+numarul de elemente ale multimii initiale (1, 2, ..., N), numarul de multimi
+existente, M si numarul de multimi ce trebuiesc alese pentru a reconstitui
+multimea initala, K; multimile, alaturi de cardinalele si elementele lor
+sunt stocate in cadrul unei matrice pentru un acces simplificat; complexitatea
+este de O(N + N(N+N)) = O(N^2), caci StringTokenizer are o complexitate
+temporala medie de O(N) (procedeu necesar parsarii liniilor de input citite
+cu ajutorul BufferedReader);
+
+	* transpunerea datelor de intrare in cele problemei SAT, fata de care se
+realizeaza reducerea polinomiala; se construieste matricea asociata variabilelor
+expresiei boolene (in numar de M*K) ce se solutioneaza prin intermediul oracolului
+si, pe baza acestora, se formuleaza clauzele ce compun expresia:
+
+		~ primul tip se refera la existenta a K submultimi ce compun acoperirea; ele
+	sunt in numar de K (parcurgerea pe coloane a matricei de variabile);
+	obtinerea acestor clauze are complexitatea O(K*M);
+
+		~ al doilea tip se refera la posibilitatea de alegere a unei submultimi o
+	singura data in cadrul acoperirii; ele sunt in numar de M*C(K,2) + K*C(M,2),
+	caci variabilele trebuiesc sa fie unice 2 cate 2 si pe linii, si pe coloane,
+	aceste perechi fiind afisate in urma parcugerilor pe linii si pe coloane;
+	gasirea lor are complexitatea de O(M*K^2 + K*M^2);
+
+		~ al treilea tip implica ca fiecare element din multimea initiala se sa
+	regaseasca in cel putin o submultime; ele sunt in numar de N; o clauza este
+ 	alcauita din liniile matricei de variabile ce corespund submultimilor ce contin
+	un element (procedeu efectuat pentru fiecare element al multimii initiale);
+	complexitatea compunerii acestor clauze are complexitatea de
+	O(N*M*(maxCard + K)), maxCard = N;
+
+	* pasarea clauzelor rezultate oracolului;
+
+	* descifrarea rezultatului expresiei boolene furnizat de oracol cu scopul
+identificarii raspunsului problemei date: cele K submultimi ce compun multimea
+initiala; pentru aceasta se identifica indicii din matrice a variabilelor ce nu
+sunt negate din sirul celor afisate: linia reprezinta indicele submultimii ce
+se alege, in timp ce coloana a cata multime este in cadrul acoperirii;
+complexitatea acestui pas este de O(M*K + M^2*K^2) (primii M*K pasi
+se executa pentru parsarea listei de variabile boolene primite ca rezultat
+din partea oracolului folosind StringTokenizer si BufferedReader);
+
+	* afisarea raspunsului descifrat in urma analizei solutiei date de oracol;
+compexitate liniara, O(K).
+
+
+Task 2 - rise
+------------------
+
+- el presupune transformarea datelor problemei initale in cele specifice problemei
+acoperirii multimilor, problema ce se va reduce la cea a satisfiabilitatii,
+cu scopul obtinerii unei solutii exacte ce ofera raspunsul
+in timp polinomial; acestea sunt pasate instantei ce le rezolva,
+raspunsul acesteia fiind mai apoi interpretat pentru a corespunde cerintei date;
+
+- pentru a putea realiza rezolvarea prin metoda reducerii, programul efectueaza
+urmatorii pasi:
+
+	* citirea si memorarea datelor de intrare primite de la tastatura:
+cartile deja detinute de jucator, cartile continute de pachetul ce se doresc a fi
+obtinute si pachetele ce pot fi achizitionate (in numar de M); mai intai, din
+multimea cartilor din pachetul ce se doreste a fi format se elimina cartile
+deja detinute de catre jucator, caci dublurile sunt ignorate, conform datelor
+problemei; cartile ramase constituie multimea initiala descrisa de task-ul precedent;
+acestora li se atribuie un numar unic (mai exact indicele din multime), pentru a
+putea face transformarea datelor primite in cele ale problemei acoperirii multimilor
+(cardinalul acestei multimi reprezinta N-ul din datele problemei acoperirii);
+apoi sunt parcurse pachetele ce pot fi cumparate, fiind memorate in matricea
+submultimilor indicii cartilor ce apartin multimii cartilor determinate anterior (cele
+ce nu apartin sunt ignorate intrucat nu prezinta nicio utilitate), alaturi de
+cardinalele fiecarei submultimi; complexitatea acestui pas este de O(N^2);
+
+	* problema impune determinarea unui numar minim de submultimi
+ce compun multimea initiala, algoritmul pornind de la numarul minim posibil
+(K = 1) si incrementandu-l pana cand se gaseste o solutie, in limita numarului
+de submultimi existent; pentru fiecare valoare intermediara a lui K are loc
+transpunerea datelor de intrare in cele problemei SAT, rezolvarea expresiei
+boolene si interpretarea raspunsului primit din partea oracolului; complexitatea
+acestei solutii este O(M * [K*M + M*K^2 + K*M^2 +N*M*(maxCard + K] + M*K)
+(incluzandu-se reinitializarea matricei variabilelor boolene), maxCard = N;
+pentru a descifra solutia optima, complexitatea este de O(M*K + M^2*K^2);
+
+	* afisarea raspunsului descifrat in urma analizei solutiei optime date de oracol;
+compexitate liniara, O(Kminim).
+
+Task 3 - redemption
+------------------------------
+
+- acesta presupune rezolvarea problemei initiale cu ajutorul unei euristici ce
+aproximeaza rezultatul cu scopul obtinerii unei complexitati cat mai bune;
+intrucat generarea tuturor solutiilor este mult mai costisitoare ca timp,
+abordarea aleasa presupune alegerea la fiecare pas a unei submultimi
+cat mai cuprinzatoare, cu cat mai putine elemente alese inainte si care
+contine elementele cele mai rare (sa se evite pe cat posibil alegerea
+ulterioara a unei submultimi care aduce la reuniune un singur element nou
+si care contine multe elemente deja alese), pentru a minimiza pe cat posibil
+numarul de submultimi alese si a avea un rezultat cat mai aproape de
+cel exact (obtinut la task-ul anterior);
+
+- in acest caz, programul efectueaza urmatorii pasi:
+
+	* citirea si memorarea datelor de intrare primite de la tastatura:
+cartile deja detinute de jucator, cartile continute de pachetul ce se doresc a fi
+obtinute si pachetele ce pot fi achizitionate (in numar de M); mai intai, din
+multimea cartilor din pachetul ce se doreste a fi format se elimina cartile
+deja detinute de catre jucator, caci dublurile sunt ignorate, conform datelor
+problemei; acestora li se atribuie un numar unic (mai exact indicele din multime),
+pentru a putea face transformarea datelor primite in cele ale problemei acoperirii
+multimilor; apoi sunt parcurse pachetele ce pot fi cumparate, fiind memorate in
+matricea submultimilor indicii cartilor ce apartin multimii cartilor determinate
+anterior (cele ce nu apartin sunt ignorate intrucat nu prezinta nicio utilitate), alaturi
+de cardinalele fiecarei submultimi; complexitatea acestui pas este de O(N^2);
+
+	* alegerea si memorarea submultimilor ce respecta proprietatile mentionate:
+cat timp multimea initiala nu a fost obtinuta (fapt determinat datorita utilizarii unui
+vector caracteristic de aparitie al elementelor acesteia; toate elementele sunt 1)
+si mai pot fi alese submultimi (in cadrul matricei submultimilor este adaugat cate
+un element pe fiecare linie care specifica daca multimea respectiva a fost deja
+aleasa sau nu, 1 sau 0), se alege multimea (din cele nealese) care are cardinalul
+maxim si care contine elementul cel mai rar (apare de cele mai putine ori in toate
+submultimile si cel putin 1 data; acest element este cautat in prealabil, in cadrul
+unui alt vector caracteristic, de frecventa); complexitatea pentru acest proces
+este de O(N + M + (N + M*N)), incluzand verificarile de continuare si cautarile de
+elemente (existenta unui element si determinarea elementului cel mai rar);
+
+	* marcarea existentei elementelor din multimea aleasa (elementele
+corespunzatoare vectorului de aparitie devin 1, iar cele din vectorul de frecventa 0,
+intrucat ele nu ar mai trebui sa apara in submultimile viitoare in cazul ideal); acest
+pas are complexitatea O(maxCard), maxCard = N;
+
+	* afisarea raspunsului obtinut, ce are complexitate liniara, O(nrMultimi).
